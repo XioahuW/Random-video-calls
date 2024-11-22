@@ -1,0 +1,101 @@
+/* 整体页面背景设置为渐变背景，营造出优雅的视觉效果 */
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: white;
+  }
+  
+  /* 标题样式 */
+  h1 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* 按钮的通用样式 */
+  button {
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+  }
+  
+  /* 视频和麦克风开关按钮的样式 */
+  .toggle-button {
+    background-color: rgba(255, 255, 255, 0.2);
+    margin: 0 10px;
+  }
+  
+  .toggle-button i {
+    font-size: 20px;
+  }
+  
+  /* 按钮容器样式 */
+  #button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  /* 本地视频和远程视频元素的样式及布局调整 */
+  video {
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    max-width: 40%;
+    max-height: 300px;
+  }
+  
+  #localVideo {
+    margin-right: 20px;
+  }
+  
+  #remoteVideo {
+    margin-left: 20px;
+  }
+  
+  /* 新增通话时间显示的样式 */
+  #call-duration {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 18px;
+    z-index: 1;
+  }
+  
+  /* 挂断电话按钮样式 */
+  #hangupButton {
+    background-color: rgba(255, 0, 0, 0.5);
+    padding: 12px 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  #hangupButton i {
+    font-size: 24px;
+    color: white;
+  }

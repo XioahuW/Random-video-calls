@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Random Video Call with Stylish Design, Call Duration, Video Layout and Hangup Button</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* 整体页面布局样式调整 */
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      color: white;
+    }
+
+    /* 标题样式 */
+    h1 {
+      font-size: 36px;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 按钮的通用样式 */
+    button {
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-3px);
+    }
+
+    /* 视频和麦克风开关按钮的样式 */
+   .toggle-button {
+      background-color: rgba(255, 255, 255, 0.2);
+      margin: 0 10px;
+    }
+
+   .toggle-button i {
+      font-size: 20px;
+    }
+
+    /* 按钮容器样式 */
+    #button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    /* 本地视频和远程视频元素的样式及布局调整 */
+    video {
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      max-width: 40%;
+      max-height: 300px;
+    }
+
+    #localVideo {
+      margin-right: 20px;
+    }
+
+    #remoteVideo {
+      margin-left: 20px;
+    }
+
+    /* 新增通话时间显示的样式 */
+    #call-duration {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 18px;
+      z-index: 1;
+    }
+
+    /* 挂断电话按钮样式 */
+    #hangupButton {
+      background-color: rgba(255, 0, 0, 0);
+      padding: 10px;
+      border-radius: 0;
+      cursor: pointer;
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #hangupButton i {
+      font-size: 24px;
+      color: white;
+    }
+
+    /* 控制按钮容器样式 */
+    #control-buttons {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    /* 开始通话按钮样式 */
+    #startButton {
+      margin-right: 10px;
+    }
+
+    /* 设置图标按钮样式 */
+    #settingsButton {
+      background-color: rgba(255, 255, 255, 0);
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+
+    #settingsButton i {
+      font-size: 20px;
+      color: white;
+    }
+
+    /* 设置面板样式 */
+    #settings-panel {
+      display: none;
+      position: absolute;
+      top: 60px;
+      left: 20px;
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      z-index: 2;
+    }
+
+    #settings-panel h2 {
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    #settings-panel label {
+      display: block;
+      margin-bottom: 5px;
+      color: white;
+    }
+
+    #settings-panel input[type="range"] {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    #settings-panel select {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    #settings-panel button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>带有样式设计、通话时间显示、视频布局及挂断按钮的随机视频通话示例</h1>
+  <div id="video-container">
+    <video id="localVideo" autoplay playsinline></video>
+    <video id="remoteVideo" autoplay playsinline></video>
+  </div>
+  <div id="button-container">
+    <div id="control-buttons">
+      <button id="startButton">开始通话</button>
+      <button id="toggleVideoButton" class="toggle-button"><i class="fas fa-video"></i></button>
+      <button id="toggleAudioButton" class="toggle-button"><i class="fas fa-microphone"></i></button>
+      <button id="hangupButton"><i class="fas fa-times"></i></button>
+    </div>
+  </div>
+  <div id="call-duration">通话时间: 00:00:00</div>
+  <button id="settingsButton"><i class="fas fa-cog"></i></button>
+
+  <div id="settings-panel">
+    <h2>声音设置</h2>
+    <label for="inputVolume">输入音量：</label>
+    <input type="range" id="inputVolume" min="0" max="100" value="50">
+    <label for="outputVolume">输出音量：</label>
+    <input type="range" id="outputVolume" min="0" max="100" value="50">
+    <label for="inputDevice">输入设备：</label>
+    <select id="inputDevice">
+      <option value="device1">麦克风1</option>
+      <option value="device2">麦克风2</option>
+      <!-- 后续需根据实际获取设备列表动态添加选项 -->
+    </select>
+    <label for="outputDevice">输出设备：</label>
+    <select id="outputDevice">
+      <option value="device1">扬声器1</option>
+      <option value="device2">扬声器2</option>
+      <!-- 后续需根据实际获取设备列表动态添加选项 -->
+    </select>
+
+    <h2>视频设置</h2>
+    <label for="inputSource">输入设备：</label>
+    <select id="inputSource">
+      <option value="camera1">摄像头1</option>
+      <option value="camera2">摄像头2</option>
+      <!-- 后续需根据实际获取设备列表动态添加选项 -->
+    </select>
+
+    <button id="saveSettingsButton">保存设置</button>
+  </div>
+
+  <script>
+    // 获取页面中的相关元素
+    const startButton = document.getElementById('startButton');
+    const localVideo = document.getElementById('localVideo');
+    const remoteVideo = document.getElementById('remoteVideo');
+    const toggleVideoButton = document.getElementById('toggleVideoButton');
+    const toggleAudioButton = document.getElementById('toggleAudioButton');
+    const callDurationElement = document.getElementById('call-duration');
+    const hangupButton = document.getElementById('hangupButton');
+    const settingsButton = document.getElementById('settingsButton');
+    const inputVolume = document.getElementById('inputVolume');
+    const outputVolume = document.getElementById('outputVolume');
+    const inputDevice = document.getElementById('inputDevice');
+    const outputDevice = document.getElementById('outputDevice');
+    const inputSource = document.getElementById('inputSource');
+    const saveSettingsButton = document.getElementById('saveSettingsButton');
+
+    let localStream;
+    let peerConnection;
+    const socket = new WebSocket('ws://localhost:3000');
+    let startTime;
+    let intervalId;
+
+    // 向服务器发送准备好匹配的消息
+    function sendReadyToMatch() {
+      socket.send(JSON.stringify({ type: 'ready_to_match' }));
+    }
+
+    // 处理服务器推送来的匹配用户信息并建立连接
+    async function handleMatchData(data) {
+      try {
+        const { peerId, offer } = JSON.parse(data);
+        peerConnection = new RTCPeerConnection();
+
+        // 添加本地媒体流轨道到连接中
+        if (localStream) {
+          localStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, localStream);
+          });
+        }
+
+        peerConnection.ontrack = function (event) {
+          remoteVideo.srcObject = event.streams[0];
+        };
+
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answer);
+
+        // 将自己的answer发送回服务器，让服务器转发给匹配的对方用户
+        socket.send(JSON.stringify({ type: 'answer', peerId: peerId, answer: peerConnection.localDescription }));
+      } catch (error) {
+        console.error('处理匹配数据出错: ', error);
+      }
+    }
+
+    // 开始获取本地媒体流，并设置音频降噪和防回声约束
+    async function startCall() {
+      try {
+        const constraints = {
+          video: true,
+          audio: {
+            noiseSuppression: true,
+            echoCancellation: true
+          }
+        };
+        localStream = await navigator.mediaDevices.getUserMedia(constraints);
+
+        // 对音频轨道进一步应用约束（针对不同浏览器兼容性调整）
+        const audioTrack = localStream.getAudioTracks()[0];
+        await audioTrack.applyConstraints({
+          noiseSuppression: {
+            enabled: true
+          },
+          echoCancellation: {
+            enabled: true
+          }
+        });
+
+        localVideo.srcObject = localStream;
+
+        startTime = Date.now();
+        intervalId = setInterval(updateCallDuration, 1000);
+
+        sendReadyToMatch();
+
+      } catch (error) {
+        console.error('获取媒体流或建立连接出错: ', error);
+      }
+    }
+
+    // 切换视频流的开启/关闭状态
+    function toggleVideo() {
+      if (localStream) {
+        const videoTracks = localStream.getVideoTracks();
+        videoTracks.forEach(track => {
+          track.enabled =!track.enabled;
+        });
+        updateToggleVideoButtonIcon();
+      }
+    }
+
+    // 切换音频流的开启/关闭状态
+    function toggleAudio() {
+      if (localStream) {
+        const audioTracks = localStream.getAudioTracks();
+        audioTracks.forEach(track => {
+          track.enabled =!track.enabled;
+        });
+        updateToggleAudioButtonIcon();
+      }
+    }
+
+    // 根据视频按钮当前状态更新图标
+    function updateToggleVideoButtonIcon() {
+      const videoTracks = localStream.getVideoTracks();
+      const isVideoEnabled = videoTracks.some(track => track.enabled);
+      if (isVideoEnabled) {
+        toggleVideoButton.innerHTML = '<i class="fas fa-video"></i>';
+      } else {
+        toggleVideoButton.innerHTML = '<i class="fas fa-video-slash"></i>';
+      }
+    }
+
+    // 根据音频按钮当前状态更新图标
+    function updateToggleAudioButtonIcon() {
+      const audioTracks = localStream.getAudioTracks();
+      const isAudioEnabled = audioTracks.some(track => track.enabled);
+      if (isAudioEnabled) {
+        toggleAudioButton.innerHTML = '<i class="fas fa-microphone"></i>';
+      } else {
+        toggleAudioButton.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+      }
+    }
+
+    // 更新通话时间显示
+    function updateCallDuration() {
+      const currentTime = Date.now();
+      const duration = (currentTime - startTime) / 1000;
+      const hours = Math.floor(duration / 3600).toString().padStart(2, '0');
+      const minutes = Math.floor((duration % 3600) / 60).toString().padStart(2, '0');
+      const seconds = Math.floor(duration % 60).toString().padStart(2, '0');
+      callDurationElement.innerHTML = `通话时间: ${hours}:${minutes}:${seconds}`;
+    }
+
+    // 挂断电话功能，全面优化后的版本
+    function hangupCall() {
+      if (peerConnection) {
+        // 先关闭连接，确保WebRTC连接先关闭
+        peerConnection.close();
+
+        // 关闭本地媒体流，遍历所有轨道并停止
+        if (localStream) {
+          const tracks = localStream.getTracks();
+          tracks.forEach(track => {
+            track.stop();
+          });
+          // 释放媒体流资源，将其设置为null
+          localStream.getTracks = function () { return []; };
+          localStream = null;
+        }
+
+        // 清除定时器
+        clearInterval(intervalId);
+
+        // 重置变量及相关DOM状态
+        intervalId = null;
+        peerConnection = null;
+        if (localVideo.srcObject) {
+          localVideo.srcObject = null;
+        }
+        if (remoteVideo.srcObject) {
+          remoteVideo.srcObject = null;
+        }
+        callDurationElement.innerHTML = '通话时间: 00:00:00';
+      }
+    }
+
+    // 切换设置面板显示隐藏的函数
+    function toggleSettingsPanel() {
+      const settingsPanel = document.getElementById('settings-panel');
+      if (settingsPanel.style.display === 'none') {
+        settingsPanel.style.display = 'block';
+      } else {
+        settingsPanel.style.display = 'none';
+      }
+    }
+
+    // 保存设置并关闭设置面板的函数
+    function saveSettings() {
+      const inputVolumeValue = inputVolume.value;
+      const outputVolumeValue = outputVolume.value;
+      const inputDeviceValue = inputDevice.value;
+      const outputDeviceValue = outputDevice.value;
+      const inputSourceValue = inputSource.value;
+
+      console.log("输入音量:", inputVolumeValue);
+      console.log("输出音量:", outputVolumeValue);
+      console.log("输入设备:", inputDeviceValue);
+      console.log("输出设备:", outputDeviceValue);
+      console.log("视频输入设备:", inputSourceValue);
+
+      // 这里可以添加代码将设置保存到本地存储或者发送到服务器等实际操作
+
+      // 关闭设置面板
+      const settingsPanel = document.getElementById('settings-panel');
+      settingsPanel.style.display = 'none';
+    }
+
+    socket.addEventListener('message', async function (event) {
+      const data = event.data;
+      const message = JSON.parse(data);
+      if (message.type ==='match') {
+        await handleMatchData(message.data);
+      }
+    });
+
+    startButton.addEventListener('click', startCall);
+    toggleVideoButton.addEventListener('click', toggleVideo);
+    toggleAudioButton.addEventListener('click', toggleAudio);
+    hangupButton.addEventListener('click', hangupCall);
+    settingsButton.addEventListener('click', toggleSettingsPanel);
+    saveSettingsButton.addEventListener('click', saveSettings);
+  </script>
+</body>
+
+</html>
