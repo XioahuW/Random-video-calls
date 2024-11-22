@@ -122,7 +122,28 @@ function saveSettings() {
 
   // 这里可以添加代码将设置保存到本地存储或者发送到服务器等实际操作
 }
+const localVideo = document.getElementById('localVideo');
+const remoteVideo = document.getElementById('remoteVideo');
 
+navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+   .then(stream => {
+        localVideo.srcObject = stream;
+        const peerConnection = new RTCPeerConnection();
+        stream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, stream);
+        });
+        peerConnection.ontrack = event => {
+            remoteVideo.srcObject = event.streams[0];
+        };
+        // 创建并发送 Offer
+        return peerConnection.createOffer();
+    })
+   .then(offer => {
+        return peerConnection.setLocalDescription(offer);
+    })
+   .catch(error => {
+        console.error('Error accessing media devices:', error);
+    });
 // 为设置按钮添加点击事件，点击时切换设置面板的显示隐藏状态
 settingsButton.addEventListener('click', toggleSettingsPanel);
 
